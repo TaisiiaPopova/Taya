@@ -2,7 +2,7 @@ package com.example.demo;
 
 import jakarta.websocket.server.PathParam;
 import org.springframework.web.bind.annotation.*;
-import com.example.demo.Comments;
+import com.example.demo.Comment;
 import com.example.demo.SortOder;
 import java.util.Calendar;
 import java.util.List;
@@ -13,7 +13,7 @@ public class CommentController {
     private static final Random RND = new Random();
 
     @GetMapping("/api/posts/{postId}/comments")
-    public List<Comments> getComments(@PathVariable int postId,
+    public List<Comment> getComments(@PathVariable int postId,
                                       @RequestParam(defaultValue = "10") int limit,
                                       @RequestParam(defaultValue = "DESC") SortOder sort)
     {
@@ -21,26 +21,42 @@ public class CommentController {
         System.out.println(limit);
         System.out.println(sort);
         return List.of(
-                new Comments("author1", "body1", Calendar.getInstance().getTime()),
-                new Comments("author2", "body2", Calendar.getInstance().getTime())
+                new Comment("author1", "body1", Calendar.getInstance().getTime(), 101),
+                new Comment("author2", "body2", Calendar.getInstance().getTime(), 102)
         );
     }
 
     @PostMapping("/api/comments")
-    public String createComments(@RequestBody Comments comment)
+    public String createComment(@RequestBody Comment comment)
     {
         System.out.println(comment);
         return String.valueOf(RND.nextInt());
     }
 
-    @PutMapping("api/comments/{commentId}")
-    public Comments updateComments(@RequestBody Comments comment, @PathVariable int commentId)
+    @PutMapping("api/comments/{id}")
+    public Comment updateComment(@RequestBody Comment comment, @PathVariable int id)
     {
-        Comments updateComment = new Comments("Taras Kovalenko", "Good job", Calendar.getInstance().getTime());
+        Comment updateComment = new Comment("Taras Kovalenko", "Good job", Calendar.getInstance().getTime(), 101);
 
         updateComment.setBody(comment.getBody());
 
         System.out.println(updateComment);
+        System.out.println(id);
+        return updateComment;
+    }
+
+    @PutMapping("api/comments")
+    public Comment updateComment2(@RequestBody Comment comment)
+    {
+        Comment updateComment = new Comment("Taras Kovalenko",
+                "Good job",
+                Calendar.getInstance().getTime(),
+                555);
+
+        updateComment.setBody(comment.getBody());
+
+        System.out.println(updateComment);
+        System.out.println(comment.getId());
         return updateComment;
     }
 }
